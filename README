@@ -1,0 +1,10 @@
+// -------------------------------------------
+// CMCC : CosmoMC Controller (dev ver.)
+//
+// Last edit : 2020MAR30
+// Author : CLIN
+// -------------------------------------------
+
+ - To compile  : run 'make'
+ - To cleanup  : run 'make clean'
+ - To run CMCC : ./CMCC [log_mx] [log_sv_min] [log_sv_max] [log_sv_step] [channelNum(1:ee, 2:bb)]
