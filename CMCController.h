@@ -17,6 +17,7 @@ private:
 public:
     CMCC(double n1, double n2, double n3, double n4, int n5); // initialise DM params
     void printParam();
+    void genIniFile(double log_mx, double log_sv);
     void startCalc();
     void buildMinTable();
 };

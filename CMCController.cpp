@@ -32,25 +32,54 @@ void CMCC::printParam()
     cout << "       channelNum  = " << channelNum << endl;
 }
 
+void CMCC::genIniFile(double log_mx, double log_sv)
+{
+    Utils extFunc;
+    string iniFileDir = "./ini_files/2018/";
+    //string iniFileDir = "./";
+    string iniFileName = iniFileDir + extFunc.getFileTitle(log_mx, log_sv) + ".ini";
+    string iniStandard = iniFileDir + "standard_2018.ini";
+    string tmpLine;
+    if( !extFunc.fileExists(iniFileName.c_str()) ){
+        ifstream fin;
+        ofstream fout;
+
+        fin.open(iniStandard.c_str());
+        fout.open(iniFileName.c_str());
+
+        while (getline(fin, tmpLine)){
+            fout << tmpLine << endl;
+        }
+        fout << endl;
+        fout << "param[DM_mass] = " << fixed << setprecision(5) << pow(10, log_mx) << endl;
+        fout << "param[DM_log_sigmav] = " << fixed << setprecision(5) << log_sv << endl;
+
+
+        fin.close();
+        fout.close();
+    }
+}
+
 void CMCC::startCalc()
 {
-    int CMreturn = -999;
+    int CMCreturn = -999;
     Utils extFunc;
     double scan_log_mx = log_mx;
     double scan_log_sv;
     double prev_log_sv;
     string cmd;
-    string filename;
+    string iniFileName;
     stringstream msg;
 
     for (scan_log_sv = log_sv_min; scan_log_sv < log_sv_max - a_small_num; scan_log_sv += log_sv_step){
-        filename = extFunc.getFileTitle(scan_log_mx, scan_log_sv) + ".ini";
+        iniFileName = extFunc.getFileTitle(scan_log_mx, scan_log_sv) + ".ini";
 
-        cmd = "./cosmomc ./ini_files/2018" + filename;
+        cmd = "./cosmomc ./ini_files/2018/" + iniFileName;
         cout << "  :: cmd = " << cmd << endl;
-        //CMreturn = system(cmd.c_str());
+        CMCC::genIniFile(scan_log_mx, scan_log_sv);
+        CMCreturn = system(cmd.c_str());
         msg.str("");
-        msg << "  :: m_X = " << pow(10, scan_log_mx) << ", sigmav = " << pow(10, scan_log_sv) << ", CosmoMC = " << CMreturn << endl;
+        msg << "  :: m_X = " << pow(10, scan_log_mx) << ", sigmav = " << pow(10, scan_log_sv) << ", CosmoMC = " << CMCreturn << endl;
         extFunc.writeLogfile(msg.str());
         prev_log_sv = scan_log_mx;
     }
@@ -60,13 +89,14 @@ void CMCC::startCalc()
         msg.str("");
         msg << "  !> m_X = " << pow(10, scan_log_sv) << ", " << prev_log_sv << " and " << scan_log_mx << " too similar. Skip." << endl;
     } else {
-        filename = extFunc.getFileTitle(scan_log_mx, scan_log_sv) + ".ini";
+        iniFileName = extFunc.getFileTitle(scan_log_mx, scan_log_sv) + ".ini";
 
-        cmd = "./cosmomc ./ini_files/2018" + filename;
+        cmd = "./cosmomc ./ini_files/2018/" + iniFileName;
         cout << "  :: cmd = " << cmd << endl;
-        //CMreturn = system(cmd.c_str());
+        CMCC::genIniFile(scan_log_mx, scan_log_sv);
+        CMCreturn = system(cmd.c_str());
         msg.str("");
-        msg << "  :: m_X = " << pow(10, scan_log_mx) << ", sigmav = " << pow(10, scan_log_sv) << ", CosmoMC = " << CMreturn << endl;
+        msg << "  :: m_X = " << pow(10, scan_log_mx) << ", sigmav = " << pow(10, scan_log_sv) << ", CosmoMC = " << CMCreturn << endl;
         extFunc.writeLogfile(msg.str());
         prev_log_sv = scan_log_mx;
     }
