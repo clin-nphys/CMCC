@@ -15,11 +15,18 @@ struct chisqData
 
 CMCC::CMCC(double n1, double n2, double n3, double n4, int n5)
 {
+    double tmp;
     log_mx      = n1;
     log_sv_min  = n2;
     log_sv_max  = n3;
     log_sv_step = n4;
     channelNum  = n5;
+
+    if (log_sv_max < log_sv_min) {
+        tmp = log_sv_max;
+        log_sv_max = log_sv_min;
+        log_sv_min = tmp;
+    }
 }
 
 void CMCC::printParam()
