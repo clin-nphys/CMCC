@@ -87,7 +87,7 @@ void CMCC::startCalc()
         CMCreturn = system(cmd.c_str());
         
         msg.str("");
-        msg << "      done. CosmoMC = " << CMCreturn << "." << endl;
+        msg << " Done. CosmoMC = " << CMCreturn << "." << endl;
         extFunc.writeLogfile(msg.str());
         
         prev_log_sv = scan_log_sv;
@@ -114,7 +114,7 @@ void CMCC::startCalc()
         CMCreturn = system(cmd.c_str());
         
         msg.str("");
-        msg << " done. CosmoMC = " << CMCreturn << "." << endl;
+        msg << " Done. CosmoMC = " << CMCreturn << "." << endl;
         extFunc.writeLogfile(msg.str());
         
         prev_log_sv = scan_log_mx;
