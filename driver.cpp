@@ -15,8 +15,8 @@ bool checkChannelSetting(int ch)
     bool ans = 0;
     string line;
     ifstream fin;
-    fin.open("testfile.txt");
-    //fin.open("./camb/LikeDM/Gen_dNdE.ini");
+    //fin.open("testfile.txt");
+    fin.open("./camb/LikeDM/Gen_dNdE.ini");
 
     while (getline(fin, line) && ans == 0){
         switch(ch){
@@ -39,9 +39,6 @@ int main(int argc, char* argv[]) // log_mx, log_sv_min, log_sv_max, log_sv_step,
 {
     Utils extFunc;
     extFunc.writeLogfile("// ---- CMCC START ---- //\n");
-
-/*
-
 
 // ---- Check argument count ---- //
 	if (argc != 6) {
@@ -66,16 +63,9 @@ int main(int argc, char* argv[]) // log_mx, log_sv_min, log_sv_max, log_sv_step,
         return 3;
     }
 
-*/
-
     CMCC extObj(log_mx, log_sv_min, log_sv_max, log_sv_step, channelNum);
-//    extObj.startCalc();
+    extObj.startCalc();
     extObj.buildMinTable();
-
-
-
-
-
 
 // ---- End ---- //
     extFunc.writeLogfile("// ---- CMCC END ---- //\n");
