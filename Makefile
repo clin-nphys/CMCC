@@ -2,7 +2,7 @@ CFLAGS =
 CC = g++
 
 CMCC : driver.o CMCController.o Utils.o
-	$(CC) $(CFLAGS) driver.o CMCController.o Utils.o -o CMCC
+	$(CC) $(CFLAGS) driver.o CMCController.o Utils.o -o ../CMCC.o
 driver.o : driver.cpp
 	$(CC) $(CFLAGS) -c driver.cpp
 CMCController.o : CMCController.cpp
