@@ -8,6 +8,8 @@
 #include "Utils.h"
 using namespace std;
 
+int colNum = 12;
+
 struct chisqData
 {
     double col[13];
@@ -129,7 +131,7 @@ void CMCC::buildMinTable()
     int minDataLineNum = 0;
 
     for (int i = 0; i < 50; i ++){
-        for (int j = 0; j < 12; j ++) minData[i].col[j] = a_big_num;
+        for (int j = 0; j < colNum; j ++) minData[i].col[j] = a_big_num;
     }
 
     chisqData singleLine;
@@ -144,7 +146,7 @@ void CMCC::buildMinTable()
     if ( extFunc.fileExists(minTableName.c_str()) ){
         fin.open(minTableName.c_str());
         while (fin >> minData[minDataLineNum].col[0]) {
-            for (int i = 1; i < 12; i ++) {
+            for (int i = 1; i < colNum; i ++) {
                 fin >> minData[minDataLineNum].col[i];
             }
             minDataLineNum ++;
@@ -155,7 +157,7 @@ void CMCC::buildMinTable()
     fin.open("chisq.dat");
     bool found_sv;
     while (fin >> singleLine.col[0]){
-        for (int i = 1; i < 12; i++)
+        for (int i = 1; i < colNum; i++)
             fin >> singleLine.col[i];
 
         found_sv = 0;
@@ -163,7 +165,7 @@ void CMCC::buildMinTable()
             if ( extFunc.tooSimilar(singleLine.col[1], minData[i].col[1]) ){
                 found_sv = 1;
                 if ( singleLine.col[5] < minData[i].col[5] ){
-                    for (int j = 0; j < 12; j++){
+                    for (int j = 0; j < colNum; j++){
                         minData[i].col[j] = singleLine.col[j];
                     }
                 }
@@ -171,7 +173,7 @@ void CMCC::buildMinTable()
             }
         }
         if (!found_sv) {
-            for (int j = 0; j < 12; j++){
+            for (int j = 0; j < colNum; j++){
                 minData[minDataLineNum].col[j] = singleLine.col[j];
             }
             minDataLineNum ++;
@@ -183,7 +185,7 @@ void CMCC::buildMinTable()
     fout.open(minTableName.c_str(), std::ofstream::trunc);
 
     for (int i = 0; i < minDataLineNum; i++){
-        for (int j = 0; j < 12; j++){
+        for (int j = 0; j < colNum; j++){
             if ( j == 1 ) {
                 fout << scientific << minData[i].col[j] << " ";
             } else {
@@ -193,5 +195,62 @@ void CMCC::buildMinTable()
         fout << endl;
     }
     fout.close();
+
+// ---- Sorting chisqmin lines ---- //
+    fin.open(minTableName.c_str());
+
+    chisqData line[100];
+    double col_sv[100];
+    double rank[100];
+    int l = 0;
+
+    while (fin >> line[l].col[0]){
+        for (int i = 1; i < colNum; i++){
+            if ( i == 1 ) {
+                fin >> col_sv[l];
+                line[l].col[i] = col_sv[l];
+            } else {
+                fin >> line[l].col[i];
+            }
+        }
+        l++;
+    }
+    
+    double smallest = a_big_num;
+    int smallestAt = -999;
+    int rankNum = 1;
+    
+    for (int i = 0; i < l; i++ ){
+        smallest = a_big_num;
+        for (int j = 0; j < l; j ++){
+            if ( col_sv[j] < smallest ){
+                smallest = col_sv[j];
+                smallestAt = j;
+            }
+        }
+        col_sv[smallestAt] = a_big_num;
+        rank[smallestAt] = rankNum;
+        rankNum++;
+    }
+
+    fout.open(minTableName.c_str(), std::ofstream::trunc);
+    for (int i = 1; i <= l; i++){
+        for (int j = 0; j < l; j++){
+            if (rank[j] == i) {
+                for (int k = 0; k < colNum; k++){
+                    if ( k == 1 ) {
+                        fout << scientific << line[j].col[k] << " ";
+                    } else {
+                        fout << fixed << setprecision(8) << line[j].col[k] << " ";
+                    }
+                }
+                fout << endl;
+                break;
+            }
+        }
+    }    
+    fin.close();
+    fout.close();
+
     extFunc.writeLogfile("\n  :: Chisqmin updated.\n");
 }

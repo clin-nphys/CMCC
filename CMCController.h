@@ -20,6 +20,7 @@ public:
     void genIniFile(double log_mx, double log_sv);
     void startCalc();
     void buildMinTable();
+    void sortMinTable();
 };
 
 
