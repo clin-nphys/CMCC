@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) // log_mx, log_sv_min, log_sv_max, log_sv_step,
         log_sv_min = tmp;
     }
 
-    extFunc.writeLogfile("  (./CMCC.o " + to_string(log_mx) + " " + to_string(log_sv_min) + " " + to_string(log_sv_max) + " " + to_string(log_sv_step) + " " + to_string(channelNum) + ")\n\n");
+    extFunc.writeLogfile("  :: ./CMCC.o " + to_string(log_mx) + " " + to_string(log_sv_min) + " " + to_string(log_sv_max) + " " + to_string(log_sv_step) + " " + to_string(channelNum) + "\n\n");
 
 // ---- Check channel setting in Gen_dnde.ini file ---- //
     if ( channelNum != 1 && channelNum != 2 ){
