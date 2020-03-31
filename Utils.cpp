@@ -21,13 +21,13 @@ void Utils::writeLogfile(string msg)
     ofstream fout;
     fout.open("CMCCLogfile.log", std::ios_base::app);
 
-    fout << msg << endl;
+    fout << msg;
     fout.close();
 }
 
 bool Utils::tooSimilar(double a, double b)
 {
-    double frac_diff = abs(a - b) / a;
+    double frac_diff = abs( abs(a - b) / a);
     if (frac_diff < thresh) return 1;
     else return 0;
 }

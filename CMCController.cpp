@@ -15,18 +15,11 @@ struct chisqData
 
 CMCC::CMCC(double n1, double n2, double n3, double n4, int n5)
 {
-    double tmp;
     log_mx      = n1;
     log_sv_min  = n2;
     log_sv_max  = n3;
     log_sv_step = n4;
     channelNum  = n5;
-
-    if (log_sv_max < log_sv_min) {
-        tmp = log_sv_max;
-        log_sv_max = log_sv_min;
-        log_sv_min = tmp;
-    }
 }
 
 void CMCC::printParam()
@@ -82,29 +75,48 @@ void CMCC::startCalc()
         iniFileName = extFunc.getFileTitle(scan_log_mx, scan_log_sv) + ".ini";
 
         cmd = "./cosmomc ./ini_files/2018/" + iniFileName;
-        cout << "  :: cmd = " << cmd << endl;
+        cout << endl << endl;
+        cout << "  :: ==========================================================================" << endl;
+        cout << "  ::  cmd = " << cmd << endl;
+        cout << "  :: ==========================================================================" << endl << endl;
+        msg.str("");
+        msg << "  :: m_X = " << pow(10, scan_log_mx) << ", sigmav = " << pow(10, scan_log_sv) << " starts...";
+        extFunc.writeLogfile(msg.str());
+        
         CMCC::genIniFile(scan_log_mx, scan_log_sv);
         CMCreturn = system(cmd.c_str());
+        
         msg.str("");
-        msg << "  :: m_X = " << pow(10, scan_log_mx) << ", sigmav = " << pow(10, scan_log_sv) << ", CosmoMC = " << CMCreturn << endl;
+        msg << "      done. CosmoMC = " << CMCreturn << "." << endl;
         extFunc.writeLogfile(msg.str());
-        prev_log_sv = scan_log_mx;
+        
+        prev_log_sv = scan_log_sv;
     }
 
     scan_log_sv = log_sv_max;
-    if (extFunc.tooSimilar(prev_log_sv, scan_log_sv)) {
+    if (extFunc.tooSimilar(pow(10, prev_log_sv), pow(10, scan_log_sv))) {
         msg.str("");
-        msg << "  !> m_X = " << pow(10, scan_log_sv) << ", " << prev_log_sv << " and " << scan_log_mx << " too similar. Skip." << endl;
+        msg << "  !> m_X = " << pow(10, scan_log_mx) << ", " << prev_log_sv << " and " << scan_log_sv << " too similar. Skip." << endl;
+        extFunc.writeLogfile(msg.str());
     } else {
         iniFileName = extFunc.getFileTitle(scan_log_mx, scan_log_sv) + ".ini";
 
         cmd = "./cosmomc ./ini_files/2018/" + iniFileName;
-        cout << "  :: cmd = " << cmd << endl;
+        cout << endl << endl;
+        cout << "  :: ==========================================================================" << endl;
+        cout << "  ::  cmd = " << cmd << endl;
+        cout << "  :: ==========================================================================" << endl << endl;
+        msg.str("");
+        msg << "  :: m_X = " << pow(10, scan_log_mx) << ", sigmav = " << pow(10, scan_log_sv) << " starts...";
+        extFunc.writeLogfile(msg.str());
+        
         CMCC::genIniFile(scan_log_mx, scan_log_sv);
         CMCreturn = system(cmd.c_str());
+        
         msg.str("");
-        msg << "  :: m_X = " << pow(10, scan_log_mx) << ", sigmav = " << pow(10, scan_log_sv) << ", CosmoMC = " << CMCreturn << endl;
+        msg << " done. CosmoMC = " << CMCreturn << "." << endl;
         extFunc.writeLogfile(msg.str());
+        
         prev_log_sv = scan_log_mx;
     }
 
@@ -181,5 +193,5 @@ void CMCC::buildMinTable()
         fout << endl;
     }
     fout.close();
-    extFunc.writeLogfile("  :: Chisqmin updated.");
+    extFunc.writeLogfile("\n  :: Chisqmin updated.\n");
 }
